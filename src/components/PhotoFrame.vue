@@ -1,34 +1,40 @@
 <template>
-  <v-img :src="item.src" height="100vh" transition="fade-transition" class="align-end">
-    <v-card-text class="clock text-center" :class="item.color+'--text'">
-      {{ clock.hour }}:{{ ('00'+clock.minute).slice(-2) }}
-    </v-card-text>
-  </v-img>
+  <v-carousel v-model="model" @change="swiped" hide-delimiters height="100%">
+    <v-carousel-item v-for="item in items" :key="item.src"
+      reverse-transition="fade-transition" transition="fade-transition">
+      <v-img :src="require(`@/assets/${item.src}`)" height="100%">
+        <ClockBoard :style="item.board" />
+      </v-img>
+    </v-carousel-item>
+  </v-carousel>
 </template>
 
 <script setup lang="ts">
-import { inject, computed } from 'vue'
-import { ClockKey } from '@/composables/clock'
-import photos from '@/configs/photos'
-import "@fontsource/nanum-pen-script"
+import { ref, inject, watch } from 'vue'
+import { useIntervalFn, useTimeoutFn } from '@vueuse/core'
+import { key } from '@/stores'
+import items from '@/configs/items.json'
+import ClockBoard from '@/components/ClockBoard.vue'
 
-const clock = inject(ClockKey)
-if (!clock) throw new Error(`${ClockKey} is not provided.`)
-
-const item = computed(() => {
-  const item = photos[clock.minute]
-  if (!item) return photos[0]
-  return {
-    src: require(`@/assets/${item.src}`),
-    color: item.color ? item.color : 'white'
-  }
-})
-</script>
-
-<style scoped>
-.clock {
-  font-family: "Nanum Pen Script";
-  font-size: 30vw;
-  line-height: 30vw;
+const store = inject(key)
+if (!store) throw new Error(`${key} is not provided.`)
+const model = ref<number>(0)
+const play = () => {
+  model.value = store.frame.value % items.length
 }
-</style>
+const { pause, resume } = useIntervalFn(() => {
+  store.tick()
+}, 1000)
+const { start, stop } = useTimeoutFn(() => {
+  resume()
+  play()
+}, 15000)
+watch(() => store.frame.value, () => {
+  play()
+})
+const swiped = () => {
+  pause()
+  stop()
+  start()
+}
+</script>

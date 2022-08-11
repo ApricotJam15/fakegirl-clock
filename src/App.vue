@@ -1,11 +1,17 @@
 <template>
-  <AppLayout />
+  <v-app>
+    <v-main>
+      <PhotoFrame />
+    </v-main>
+    <UpdaterButton />
+  </v-app>
 </template>
 
 <script setup lang="ts">
 import { provide } from 'vue'
-import { useClock, ClockKey } from '@/composables/clock'
-import AppLayout from '@/components/AppLayout.vue'
+import store, { key } from '@/stores'
+import PhotoFrame from '@/components/PhotoFrame.vue'
+import UpdaterButton from '@/components/UpdaterButton.vue'
 
-provide(ClockKey, useClock())
+provide(key, store())
 </script>
