@@ -1,8 +1,8 @@
 <template>
-  <v-carousel v-model="model" @change="swiped" hide-delimiters height="100%">
+  <v-carousel v-model="model" @change="swiped" hide-delimiters height="100%" v-resize="onresize">
     <v-carousel-item v-for="item in items" :key="item.src"
       reverse-transition="fade-transition" transition="fade-transition">
-      <v-img :src="require(`@/assets/${item.src}`)" height="100%">
+      <v-img :src="require(`@/assets/${item.src}`)" height="100vh" :contain="!isPortrait" class="blue-grey darken-4">
         <ClockBoard :style="item.board" />
       </v-img>
     </v-carousel-item>
@@ -19,6 +19,7 @@ import ClockBoard from '@/components/ClockBoard.vue'
 const store = inject(key)
 if (!store) throw new Error(`${key} is not provided.`)
 const model = ref<number>(0)
+const isPortrait = ref<boolean>(true)
 const play = () => {
   model.value = store.frame.value % items.length
 }
@@ -32,6 +33,9 @@ const { start, stop } = useTimeoutFn(() => {
 watch(() => store.frame.value, () => {
   play()
 })
+const onresize = () => {
+  isPortrait.value = (window.screen.orientation.type === 'portrait-primary');
+}
 const swiped = () => {
   pause()
   stop()
