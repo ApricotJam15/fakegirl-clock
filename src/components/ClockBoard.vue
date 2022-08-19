@@ -1,18 +1,16 @@
 <template>
   <v-sheet class="board blue-grey darken-4 text-center">
 		<div class="face white--text">
-			{{ store.face.value }}
+			{{ face }}
 		</div>
 	</v-sheet>
 </template>
 
 <script setup lang="ts">
-import { inject } from 'vue'
-import { key } from '@/stores'
+import { useNow, useDateFormat } from '@vueuse/core'
 import "@fontsource/nanum-pen-script"
 
-const store = inject(key)
-if (!store) throw new Error(`${key} is not provided.`)
+const face = useDateFormat(useNow(), 'H:mm')
 </script>
 
 <style scoped>
