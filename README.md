@@ -5,7 +5,7 @@ Vue 2.7とVuetifyで開発しました。
 
 ## Demo
 
-[https://jam4u0.github.io/fakegirl-clock/](https://jam4u0.github.io/fakegirl-clock/)
+[https://ApricotJam15.github.io/fakegirl-clock/](https://jam4u0.github.io/fakegirl-clock/)
 
 ## Usage
 
